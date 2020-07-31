@@ -45,7 +45,7 @@ class _HTTPClientConnection:
         for header, value in headers:
             self.writer.write(f'{header}: {value}\r\n'.encode('latin-1'))
         self.writer.write(b'\r\n')
-        if body:
+        if body is not None:
             self.writer.write(body)
 
     async def get_response(self):
@@ -124,12 +124,12 @@ class HTTPClientTransport(ClientTransportABC):
         if query:
             path += '?' + query
         if content_type:
-            if body:  # dont include content-type if there is no body
+            if body is not None:  # dont include content-type if there is no body
                 headers['Content-Type'] = content_type
         headers.pop('content-type', None)
         headers.pop('content-length', None)
         headers.pop('Content-Length', None)
-        if body:
+        if body is not None:
             headers['Content-Length'] = str(len(body))
         headers['User-Agent'] = headers.pop('user-agent', 'waspy-http-client')
 
